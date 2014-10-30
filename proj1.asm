@@ -1,0 +1,237 @@
+#ASM for program 1 store integers and name and then print as needed
+
+#Directives
+A1	.INT	1
+A2	.INT	2
+A3	.INT	3
+A4	.INT	4
+A5	.INT	5
+A6	.INT	6
+B1	.INT	300
+B2	.INT	150
+B3	.INT	50
+B4	.INT	20
+B5	.INT	10
+B6	.INT	5
+C1	.INT 	500
+C2	.INT	2
+C3	.INT	5
+C4	.INT	10
+
+Ch_G	.BYT	'G'
+Ch_r	.BYT	'r'
+Ch_e	.BYT	'e'
+Ch_g	.BYT	'g'
+Ch_H	.BYT	'H'
+Ch_o	.BYT	'o'
+Ch_d	.BYT	'd'
+Ch_s	.BYT	's'
+Ch_n	.BYT	'n'
+
+COMMA	.BYT 	','
+SPACE	.BYT	' '
+RETURN	.BYT	0x13
+NEWLINE	.BYT	0x12
+
+#Instructions
+
+	#Output name last
+LDR	R0,Ch_H
+TRP	$3
+LDR	R0,Ch_o
+TRP	$3
+LDR	R0,Ch_d
+TRP	$3
+LDR	R0,Ch_g
+TRP	$3
+LDR	R0,Ch_s
+TRP	$3
+LDR	R0,Ch_o
+TRP	$3
+LDR	R0,Ch_n
+TRP	$3
+LDR	R0,COMMA
+TRP	$3
+LDR	R0,SPACE
+TRP	$3
+LDR	R0,Ch_G
+TRP	$3
+LDR	R0,Ch_r
+TRP	$3
+LDR	R0,Ch_e
+TRP	$3
+LDR	R0,Ch_g
+TRP	$3
+	
+	#Go to new line
+LDR R0,NEWLINE
+TRP	$3
+TRP	$3
+LDR R0,RETURN
+TRP	$3
+
+	#Add set B incrementally and output result
+LDR	R2,B1
+LDR	R1,B2
+ADD	R2,R1
+MOV R0,R2
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,B3
+ADD	R2,R1
+MOV R0,R2
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,B4
+ADD	R2,R1
+MOV R0,R2
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,B5
+ADD	R2,R1
+MOV R0,R2
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,B6
+ADD	R2,R1
+MOV R0,R2
+TRP	$1
+	
+	#Do another Blank line
+LDR R0,NEWLINE
+TRP	$3
+TRP	$3
+LDR R0,RETURN
+TRP	$3
+
+	#Multiply set A and uncrementally print result
+LDR	R3,A1
+LDR	R1,A2
+MUL	R3,R1
+MOV R0,R3
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,A3
+MUL	R3,R1
+MOV R0,R3
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,A4
+MUL	R3,R1
+MOV R0,R3
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,A5
+MUL	R3,R1
+MOV R0,R3
+TRP	$1
+LDR R0,SPACE
+TRP	$3
+TRP	$3
+LDR	R1,A6
+MUL	R3,R1
+MOV R0,R3
+TRP	$1
+	
+	#Print a blank line
+LDR	R0, NEWLINE
+TRP $3
+TRP	$3
+LDR R0,RETURN
+TRP	$3
+
+	#Divide R2 by Each in set B
+LDR R1,B1
+DIV R1,R2
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,B2
+DIV R1,R2
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,B3
+DIV R1,R2
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,B4
+DIV R1,R2
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,B5
+DIV R1,R2
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,B6
+DIV R1,R2
+MOV R0,R1
+TRP $1
+
+	#Print another blank line
+LDR	R0, NEWLINE
+TRP $3
+TRP	$3
+LDR R0,RETURN
+TRP	$3
+
+	#Subtract each member of set, the result of R3
+LDR R1,C1
+SUB R1,R3
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,C2
+SUB R1,R3
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,C3
+SUB R1,R3
+MOV R0,R1
+TRP $1
+LDR R0,SPACE
+TRP $3
+TRP $3
+LDR R1,C4
+SUB R1,R3
+MOV R0,R1
+TRP $1
+LDR R0,NEWLINE
+TRP $3
+LDR R0,RETURN
+TRP	$3
+
+#end progam
+TRP $0
