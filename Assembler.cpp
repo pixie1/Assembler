@@ -35,10 +35,17 @@ void Assembler::initInstructions()
     instructions["LDRI"] = LDRI;
     instructions["STBI"] = STBI;
     instructions["LDBI"] = LDBI;
+    instructions["RUN"] = RUN;
+    instructions["END"]= END;
+    instructions["BLK"] = BLK;
+    instructions["LCK"] =LCK;
+    instructions["ULK"] = ULK;
 }
 
-char* Assembler::AssembleCode(string fileName)
+char* Assembler::AssembleCode(string fileName, int size)
 {
+    mem = new char[size];
+    
     //open and test file
     ifstream inFile(fileName, ifstream::in);
     if(!inFile)
@@ -59,6 +66,8 @@ char* Assembler::AssembleCode(string fileName)
     
     while (getline(inFile, line))
     {
+        ++lineCtr;
+        
         ++lineCtr;
         int linetype = TokenUtil::validateLineType(line);
         
@@ -257,5 +266,62 @@ char* Assembler::AssembleCode(string fileName)
             //codeDump(PC-12);
         }
     }
+    
+    //assign end of code and data segment as heap start
+    heapStart = memctr;
     return mem;
+}
+
+void Assembler::MakePC_InstructionTable(string inF, string outFile)
+{
+    //open and test file
+    map<int,string> instructions;
+    map<int,string> data;
+    
+    ifstream inFile(inF, ifstream::in);
+    if(!inFile)
+        throw runtime_error("Error in opening file: " + string(inF));
+    
+    int memctr = 6;
+    int instructionCount =0;
+    
+    //initialize the instructions to values, built in the code statically
+    initInstructions();
+    
+    //process first pass
+    string line = "";
+    
+    while (getline(inFile, line))
+    {
+        int linetype = TokenUtil::validateLineType(line);
+        
+        if (linetype == instruction)
+        {
+            instructions[instructionCount] = line;
+            ++instructionCount;
+        }
+        else if (linetype == directive)
+        {
+            data[memctr] = line;
+            if(regex_match(line,std::regex(".*\\.BYT.*")))
+                memctr++;
+            else if(regex_match(line,std::regex(".*\\.INT.*")))
+                memctr += 4;
+        }
+    }
+    
+    ofstream ot(outFile, ofstream::out);
+    ot<<"INSTRUCTIONS: "<<endl;
+    for (map<int,string>::iterator itr = instructions.begin(); itr!=instructions.end(); ++itr)
+    {
+        ot << itr->first * 12 << ": " << itr->second << endl;
+    }
+    
+    ot<<"\nDATA: "<<endl;
+    for (map<int,string>::iterator itr = data.begin(); itr!=data.end(); ++itr)
+    {
+        ot << itr->first + ( instructionCount * 12) << ": " << itr->second << endl;
+    }
+    
+    ot.close();
 }
