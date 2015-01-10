@@ -9,14 +9,40 @@
 #ifndef __Assembler__VM__
 #define __Assembler__VM__
 
+#define THREAD_MAX 7
+#define REGISTER_COUNT 13
+#define REGISTER_SIZE 4
+
 #include "Assembler.h"
+#include <vector>
+#include <mutex>
+
+struct WordData
+{
+    RawData InstructionCode;
+    RawData DestArg;
+    RawData SourceArg;
+};
 
 class VirtualMachine{
 private:
-    RawData registers[9];
-    char* mem;
+    static RawData registers[REGISTER_COUNT];
+    static WordData fetch;
+    static char* mem;
+    static bool threadpool[THREAD_MAX];
+    static int currentThreadID;
+    static int totalStackSpace;
+    static int memSize;
+    static int heapStart;
+    static int getAvailableThread();
+    static void ContextSwitch();
+    static void AssignThreadConext(int,int,bool);
+    static ofstream log;
+    static ofstream contextLog;
 public:
-    VirtualMachine(char* m){mem = m;}
-    void Run();
+    static bool exeLog;
+    VirtualMachine(char* m,int heapStart,int size);
+    void Run(int start);
+    static void RunThread(int start, int threadId);
 };
 #endif /* defined(__Assembler__VM__) */
