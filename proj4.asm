@@ -1,0 +1,662 @@
+######################## DATA SEGMENT ########################
+ZERO	.INT	0
+NULL	.BYT	ZERO
+ONE	.INT	1
+INPUT	.INT	0
+INTSIZE	.INT	4
+#PMX		.INT	0
+NEWLINE	.BYT	'\n'
+COMMA	.BYT	','
+SPACE	.BYT	' '
+ARRAY_MUTEX	.INT	-1
+FACORIAL_EXE_FLAG	.INT	0
+
+ARRAY	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+	.INT	0
+
+PART1_MESSAGE	.BYT	'P'
+	.BYT	'A'
+	.BYT	'R'
+	.BYT	'T'	
+	.BYT	' '	
+	.BYT	'1'
+	.BYT	':'
+	.BYT	' '
+	.BYT	'S'
+	.BYT	'i'
+	.BYT	'm'
+	.BYT	'p'
+	.BYT	'l'
+	.BYT	'e'
+	.BYT	' '
+	.BYT	'F'
+	.BYT	'a'
+	.BYT	'c'
+	.BYT	't'
+	.BYT	'o'
+	.BYT	'r'
+	.BYT	'i'
+	.BYT	'a'
+	.BYT	'l'
+	.BYT	'\n'
+	.BYT	0x00	
+
+PART2_MESSAGE	.BYT	'P'
+	.BYT	'A'
+	.BYT	'R'
+	.BYT	'T'	
+	.BYT	' '	
+	.BYT	'2'
+	.BYT	':'
+	.BYT	' '
+	.BYT	'B'
+	.BYT	'y'
+	.BYT	't'
+	.BYT	'e'
+	.BYT	' '
+	.BYT	'A'
+	.BYT	'd'
+	.BYT	'd'
+	.BYT	'r'
+	.BYT	'e'
+	.BYT	's'
+	.BYT	's'
+	.BYT	'a'
+	.BYT	'b'
+	.BYT	'l'
+	.BYT	'e'
+	.BYT	'\n'
+	.BYT	0x00
+
+PART3_MESSAGE	.BYT	'P'
+	.BYT	'A'
+	.BYT	'R'
+	.BYT	'T'	
+	.BYT	' '	
+	.BYT	'3'
+	.BYT	':'
+	.BYT	' '
+	.BYT	'M'
+	.BYT	'u'
+	.BYT	'l'
+	.BYT	't'
+	.BYT	'i'
+	.BYT	'-'
+	.BYT	't'
+	.BYT	'h'
+	.BYT	'r'
+	.BYT	'e'
+	.BYT	'a'
+	.BYT	'd'
+	.BYT	'e'
+	.BYT	'd'
+	.BYT	'\n'
+	.BYT	0x00
+
+CNT	.INT	0
+
+MAIN_OUTPUT1	.BYT	'F'
+	.BYT	'a'	
+	.BYT	'c'
+	.BYT	't'
+	.BYT	'o'
+	.BYT	'r'
+	.BYT	'i'
+	.BYT	'a'
+	.BYT	'l'
+	.BYT	' '
+	.BYT	'o'
+	.BYT	'f'
+	.BYT	' '
+	.BYT	0x00
+
+MAIN_OUTPUT2	.BYT	' '
+	.BYT	'i'	
+	.BYT	's'	
+	.BYT	' '
+	.BYT	0x00
+
+STACK_OVERFLOW_MESSAGE	.BYT	'S'
+	.BYT	'a'
+	.BYT	'c'
+	.BYT	'k'
+	.BYT	' '
+	.BYT	'o'
+	.BYT	'v'
+	.BYT	'e'
+	.BYT	'r'
+	.BYT	'f'
+	.BYT	'l'
+	.BYT	'o'
+	.BYT	'w'
+	.BYT	' '
+	.BYT	'o'
+	.BYT	'c'
+	.BYT	'c'
+	.BYT	'u'
+	.BYT	'r'
+	.BYT	'r'
+	.BYT	'e'
+	.BYT	'd'
+	.BYT	'\n'
+	.BYT	0x00
+
+
+
+
+######################## END DATA SEGMENT#####################
+
+
+######################## CODE SEGMENT ########################
+
+#MAIN
+
+MOV	R5	SP
+ADI	R5	$-12	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+LDA R0	PART1_MESSAGE
+ADI SP	$-4
+STR R0	(SP)
+JMP	_PF
+
+_WHILE_1:	TRP	$2
+	BRZ	R0	_WHILE_1_END
+	MOV	R3	R0
+
+	#Activation Record for Factorial
+	MOV	R5	SP
+	ADI	R5	$-24	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 12 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	ADI SP	$-4
+	STR R3	(SP)
+	ADI SP	$-4
+	STR R3	(SP)
+	ADI SP	$-4
+	LDR	R0	ZERO
+	STR R0	(SP)
+	JMP	_FACTORIAL
+
+	#restore variable
+	MOV	R0	SP
+	ADI	R0	$-12
+	LDR	R3	(R0)
+
+	#get return value
+	MOV	R1	SP
+	ADI	R1	$-20
+	LDR	R4	(R1)
+
+	#Give Message
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 12 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	MAIN_OUTPUT1
+	ADI SP	$-4
+	STR R0	(SP)
+	ADI	SP	$-4
+	STR	R3	(SP)  #temporary input
+	ADI	SP	$-4
+	STR	R4	(SP)  #temporary result
+	JMP	_PF
+
+	#restore temporary variables
+	MOV	R0	SP
+	ADI	R0	$-20
+	LDR	R4	(R0)
+	ADI	R0	$4
+	LDR	R3	(R0)
+
+	MOV R0	R3	
+	TRP	$1
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 12 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	MAIN_OUTPUT2
+	ADI SP	$-4
+	STR R0	(SP)
+	ADI	SP	$-4
+	STR	R3	(SP)  #temporary input
+	ADI	SP	$-4
+	STR	R4	(SP)  #temporary result
+	JMP	_PF
+		
+	#restore temporary variables
+	MOV	R0	SP
+	ADI	R0	$-20
+	LDR	R4	(R0)
+	ADI	R0	$4
+	LDR	R3	(R0)
+			
+	MOV	R0	R4
+	TRP	$1
+
+	#NEWLINE
+	LDR	R0	NEWLINE
+	TRP	$3
+
+	#STORE IN ARRAY
+
+	LDA	R0	ARRAY
+	LDR	R1	CNT
+	LDR	R2	INTSIZE
+	MUL	R2	R1	
+	ADD	R0	R2
+	STR	R3	(R0)
+	ADI	R0	$4
+	STR	R4	(R0)
+	ADI	R1	$2
+	STR	R1	CNT
+
+
+	JMP	_WHILE_1
+
+_WHILE_1_END:	MOV R0	R0   
+
+MOV	R5	SP
+ADI	R5	$-12	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+LDA R0	PART2_MESSAGE
+ADI SP	$-4
+STR R0	(SP)
+JMP	_PF
+
+##PART 2, BYTE ADDRESABILITY
+
+#Print out Data
+
+LDR	R1	ZERO
+LDR	R0	CNT
+CMP R0	R1
+BRZ	R0	WHILE_3_END
+LDA	R2	ARRAY
+LDR	R0	INTSIZE
+MUL	R0	R1
+ADD	R0	R2
+LDR	R0	(R0)
+TRP	$1
+ADI R1	$1	
+
+#COMMA DELIMIT ADDITIONAL PARAMETERS
+WHILE_3:	LDR	R0	CNT
+	CMP R0	R1
+	BRZ	R0	WHILE_3_END
+	LDR	R0	COMMA
+	TRP	$3
+	LDR	R0	SPACE
+	TRP	$3
+	LDA	R2	ARRAY
+	LDR	R0	INTSIZE
+	MUL	R0	R1
+	ADD	R0	R2
+	LDR	R0	(R0)
+	TRP	$1
+	ADI R1	$1	
+	JMP WHILE_3
+WHILE_3_END:	LDR	R0	NEWLINE
+	TRP	$3#DUMP ARRAY
+
+
+
+MOV	R5	SP
+ADI	R5	$-12	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+LDA R0	PART3_MESSAGE
+ADI SP	$-4
+STR R0	(SP)
+JMP	_PF
+
+#PART 3, MULTITHREADING
+
+LDR	R0	ZERO
+STR R0	CNT
+
+_WHILE_4:	TRP	$2
+	BRZ	R0	_WHILE_4_END
+
+	#Spawn thread
+	RUN	R6	_THREAD_SEQUENCE
+
+	JMP	_WHILE_4
+
+_THREAD_SEQUENCE:	MOV	R3	R0
+	MOV	R5	SP
+	ADI	R5	$-24	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$168	#ADD 14 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	ADI SP	$-4
+	STR R3	(SP)
+	ADI SP	$-4
+	STR R3	(SP)
+	ADI SP	$-4
+	LDR	R0	ZERO
+	STR R0	(SP)
+
+	#SET UP BLOCKING
+	_BLOCKING_LOOP:	LDR R2	FACORIAL_EXE_FLAG
+	BRZ	R2	_BLOCKING_LOOP
+
+	JMP	_FACTORIAL
+	
+	#restore variable
+	MOV	R0	SP
+	ADI	R0	$-12
+	LDR	R3	(R0)
+
+	#get return value
+	MOV	R1	SP
+	ADI	R1	$-20
+	LDR	R4	(R1)
+
+	#Give Message
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 12 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	MAIN_OUTPUT1
+	ADI SP	$-4
+	STR R0	(SP)
+	ADI	SP	$-4
+	STR	R3	(SP)  #temporary input
+	ADI	SP	$-4
+	STR	R4	(SP)  #temporary result
+	JMP	_PF
+
+	#restore temporary variables
+	MOV	R0	SP
+	ADI	R0	$-20
+	LDR	R4	(R0)
+	ADI	R0	$4
+	LDR	R3	(R0)
+
+	MOV R0	R3	
+	TRP	$1
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 12 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	MAIN_OUTPUT2
+	ADI SP	$-4
+	STR R0	(SP)
+	ADI	SP	$-4
+	STR	R3	(SP)  #temporary input
+	ADI	SP	$-4
+	STR	R4	(SP)  #temporary result
+	JMP	_PF
+		
+	#restore temporary variables
+	MOV	R0	SP
+	ADI	R0	$-20
+	LDR	R4	(R0)
+	ADI	R0	$4
+	LDR	R3	(R0)
+			
+	MOV	R0	R4
+	TRP	$1
+
+	#NEWLINE
+	LDR	R0	NEWLINE
+	TRP	$3
+	
+	#Load Values in array
+	LCK	ARRAY_MUTEX
+	LDA	R0	ARRAY
+	LDR	R1	CNT
+	LDR	R2	INTSIZE
+	MUL	R2	R1	
+	ADD	R0	R2
+	STR	R3	(R0)
+	ADI	R0	$4
+	STR	R4	(R0)
+	ADI	R1	$2
+	STR	R1	CNT
+	ULK	ARRAY_MUTEX
+	
+	END
+_WHILE_4_END:	LDR	R1	ZERO
+ADI	R1	$1
+STR	R1	FACORIAL_EXE_FLAG
+
+#JOIN
+BLK	
+
+#OUTPUT RESULTS
+
+LDR	R0	CNT
+LDR	R1	ZERO
+CMP R0	R1
+BRZ	R0	WHILE_3_END
+LDA	R2	ARRAY
+LDR	R0	INTSIZE
+MUL	R0	R1
+ADD	R0	R2
+LDR	R0	(R0)
+TRP	$1
+ADI R1	$1	
+
+#COMMA DELIMIT ADDITIONAL PARAMETERS
+WHILE_5:	LDR	R0	CNT
+	CMP R0	R1
+	BRZ	R0	WHILE_5_END
+	LDR	R0	COMMA
+	TRP	$3
+	LDR	R0	SPACE
+	TRP	$3
+	LDA	R2	ARRAY
+	LDR	R0	INTSIZE
+	MUL	R0	R1
+	ADD	R0	R2
+	LDR	R0	(R0)
+	TRP	$1
+	ADI R1	$1	
+	JMP WHILE_5
+WHILE_5_END:	LDR	R0	NEWLINE
+	TRP	$3
+
+#END MAIN
+	TRP $0
+
+#------------------------Subroutines---------------------------
+
+_PF:	MOV	R1	FP	
+		ADI	R1	$-12
+		LDR	R1	(R1)
+_PF_WHILE:		LDB R2	ZERO
+		LDB	R0	(R1)
+		CMP	R2	R0
+		BRZ	R2	_PF_RET  #return if null
+		TRP	$3
+		ADI	R1	$1
+		JMP _PF_WHILE
+			
+_PF_RET:		MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7	
+
+----------------------------------------
+_FACTORIAL:	MOV	R1	FP
+	ADI	R1	$-12
+	LDR	R2	(R1)
+	LDR R3	ZERO
+	CMP	R3	R2
+	BRZ	R3	_FACTORIAL_BASE_CASE
+	ADI R3	$-1
+	BRZ	R3	_FACTORIAL_BASE_CASE
+	LDR R3	ONE
+	SUB	R3	R2		
+
+	#Create activation record and recurse
+	MOV	R5	SP
+	ADI	R5	$-12	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$144	#ADD 9 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	ADI SP	$-4
+	STR R3	(SP)
+	ADI SP	$-4
+	STR R2	(SP)
+	ADI SP	$-4
+	LDR	R0	ZERO
+	STR R0	(SP)
+	JMP	_FACTORIAL
+
+	#Do computation
+	MOV	R0	SP
+	ADI	R0	$-20
+	LDR	R1	(R0)
+	ADI	R0	$4
+	LDR	R2	(R0)
+	MUL	R1	R2
+	STR	R1	(SP)
+
+	MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7	
+
+_FACTORIAL_BASE_CASE:	LDR R0	ONE
+	STR	R0	(SP)
+	MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7	
+
+
+OVERFLOW: 	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	STACK_OVERFLOW_MESSAGE
+	ADI SP	$-4
+	STR R0	(SP)
+	JMP	_PF
+	TRP $0
