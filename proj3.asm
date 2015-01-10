@@ -1,0 +1,692 @@
+#Declare symbols and constants
+
+#################GLOBLALS#######################
+
+NEWLINE	.BYT	'\n'
+ZERO	.INT	0
+ONE	.INT	1
+INTSIZE	.INT	4
+
+SIZE	.INT	7
+CNT	.INT	0
+TENTH	.INT	0
+
+C 	.BYT	0x00
+	.BYT	0x00
+	.BYT	0x00
+	.BYT	0x00
+	.BYT	0x00
+ 	.BYT	0x00
+ 	.BYT	0x00
+
+DATA	.INT	0
+FLAG	.INT	0
+OPDV	.INT	0
+
+#MAIN TOKENS######################
+
+NULL	.BYT	0x00
+ATSYMBOL	.BYT	'@'
+PLUSSYMBOL	.BYT	'+'
+MINUSSYMBOL	.BYT	'-'
+TEN	.INT	10
+NEGATIVE	.INT	-1
+
+_MAIN_STRING1	.BYT	'O'
+	.BYT	'p'
+	.BYT	'e'
+	.BYT	'r'
+	.BYT	'a'
+	.BYT	'n'
+	.BYT	'd'
+	.BYT	' '
+	.BYT	'i'
+	.BYT	's'
+	.BYT	' '
+	.BYT	0x00
+
+STACK_OVERFLOW_MESSAGE	.BYT	'S'
+	.BYT	'a'
+	.BYT	'c'
+	.BYT	'k'
+	.BYT	' '
+	.BYT	'o'
+	.BYT	'v'
+	.BYT	'e'
+	.BYT	'r'
+	.BYT	'f'
+	.BYT	'l'
+	.BYT	'o'
+	.BYT	'w'
+	.BYT	' '
+	.BYT	'o'
+	.BYT	'c'
+	.BYT	'c'
+	.BYT	'u'
+	.BYT	'r'
+	.BYT	'r'
+	.BYT	'e'
+	.BYT	'd'
+	.BYT	'\n'
+	.BYT	0x00
+
+_MAIN_STRING2	.BYT	'\n'
+	.BYT	0x00
+
+#OPD TOKENS#######################
+
+_0	.BYT	'0'
+_1	.BYT	'1'
+_2	.BYT	'2'
+_3	.BYT	'3'
+_4	.BYT	'4'
+_5	.BYT	'5'
+_6	.BYT	'6'
+_7	.BYT	'7'
+_8	.BYT	'8'
+_9	.BYT	'9'
+
+_0N	.INT	0
+_1N	.INT	1
+_2N	.INT	2
+_3N	.INT	3
+_4N	.INT	4
+_5N	.INT	5
+_6N	.INT	6
+_7N	.INT	7
+_8N	.INT	8
+_9N	.INT	9
+
+_PLUS	.BYT	'+'
+
+
+_OPD_MSG_1	.BYT	' '
+	.BYT	'i'
+	.BYT	's'
+	.BYT	' '
+	.BYT	'n'
+	.BYT	'o'
+	.BYT	't'
+	.BYT	' '
+	.BYT	'a'
+	.BYT	' '
+	.BYT	'n'
+	.BYT	'u'
+	.BYT	'm'
+	.BYT	'b'
+	.BYT	'e'
+	.BYT	'r'
+	.BYT	'\n'
+	.BYT	0x00
+
+#getdata tokens######################
+
+_GETDATA_STRING	.BYT	'N'
+	.BYT	'u'
+	.BYT	'm'
+	.BYT	'b'
+	.BYT	'e'
+	.BYT	'r'
+	.BYT	' '
+	.BYT	't'
+	.BYT	'o'
+	.BYT	'o'
+	.BYT	' '
+	.BYT	'B'
+	.BYT	'i'
+	.BYT	'g'
+	.BYT	'\n'
+	.BYT	0x00
+
+################################INSTRUCTIONS#######################
+
+#Start Instructions - main
+
+#Activation Record for RESET
+MOV	R5	SP
+ADI	R5	$-28	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$204	#ADD 17 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+		#Variables
+ADI SP	$-4
+LDR	R0	ONE
+STR R0	(SP)
+LDR	R0	ZERO
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+
+JMP	_RESET
+
+#Activation Record for RESET
+MOV	R5	SP
+ADI	R5	$-8	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$60	#ADD 5 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+
+JMP	_GETDATA
+
+_MAIN_WHILE1:	LDB	R0	C	
+	LDB	R1	ATSYMBOL
+	CMP	R1	R0
+	BRZ	R1	_MAIN_WHILE1_END
+	
+	LDB	R1	PLUSSYMBOL
+	CMP	R1	R0
+	BRZ	R1	_MAIN_IF1_SHORT_CIRCUIT
+	LDB	R1	MINUSSYMBOL
+	CMP	R1	R0
+	BNZ	R1	_MAIN_IF1_ELSE1
+_MAIN_IF1_SHORT_CIRCUIT:	MOV	R5	SP
+	ADI	R5	$-8	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$60	#ADD 5 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	JMP	_GETDATA
+	JMP	_MAIN_IF1_END
+
+_MAIN_IF1_ELSE1:	LDA	R1	C
+	LDR	R3	ONE
+	ADD R3	R1
+	LDB R4	(R1)	
+	STB	R4	(R3)
+	LDB	R3	PLUSSYMBOL
+	STB	R3	C
+	LDR	R2	CNT
+	ADI	R2	$1
+	STR	R2	CNT
+
+_MAIN_IF1_END:	MOV	R0	R0	#NO_OP
+_MAIN_WHILE2:	LDR	R1	DATA
+	BRZ	R1	_MAIN_WHILE2_END
+	LDA	R1	C
+	LDR	R2	CNT
+	ADI	R2	$-1
+	ADD R2	R1
+	LDB	R1	(R2)
+	LDR	R3	NEWLINE
+	CMP	R3	R1
+	BNZ	R3	_MAIN_IF2_ELSE1
+	LDR	R1	ZERO
+	STR	R1	DATA
+	LDR	R1	ONE
+	STR	R1	TENTH
+	LDR	R1	CNT
+	ADI R1	$-2
+	STR	R1	CNT
+_MAIN_WHILE3:	LDR	R1	FLAG
+		BNZ	R1	_MAIN_WHILE3_END
+		LDR	R1	CNT
+		BRZ	R1	_MAIN_WHILE3_END
+
+		#Opd activation Record
+		MOV	R5	SP
+		ADI	R5	$-24	
+		CMP	R5	SL	
+		BGT	R5	OVERFLOW
+
+		MOV	R0	SP
+		ADI	SP	$-4
+		MOV	R6	FP   #Previous Frame Pointer
+		MOV	FP	R0	
+		MOV	R7	PC
+		ADI	R7	$240	#ADD 20 EXTRA INSTRUCTIONS TO SKIP
+		STR R7	(SP)
+		ADI SP	$-4
+		STR R6	(SP)
+		ADI SP	$-4
+		LDB	R1	C
+		STR	R1	(SP)
+		ADI SP	$-4
+		LDR	R1	TENTH
+		STR	R1	(SP)
+		ADI SP	$-4
+		LDA	R1	C
+		LDR	R2	CNT
+		ADD	R2	R1
+		LDB	R1	(R2)
+		STB R1	(SP)
+		ADI SP	$-4	
+		LDR	R0	ZERO
+		STR	R0	(SP)
+
+		JMP	_OPD	
+
+		LDR	R1	CNT
+		ADI	R1	$-1
+		STR	R1	CNT
+		LDR	R1	TENTH
+		LDR	R3	TEN
+		MUL	R1	R3
+		STR	R1	TENTH
+		JMP	_MAIN_WHILE3
+
+_MAIN_WHILE3_END:	LDR	R1	FLAG
+	BNZ	R1	_MAIN_IF3_END
+
+	#activation record for printf
+	MOV	R5	SP
+	ADI	R5	$-12	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	_MAIN_STRING1
+	ADI SP	$-4
+	STR R0	(SP)
+	JMP	_PF
+	LDR	R0	OPDV
+	TRP	$1
+	LDB	R0	NEWLINE
+	TRP	$3
+
+
+_MAIN_IF3_END:	JMP	_MAIN_IF2_END
+_MAIN_IF2_ELSE1:	MOV	R5	SP
+	ADI	R5	$-8	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$60	#ADD 5 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	JMP	_GETDATA
+
+_MAIN_IF2_END:	JMP	_MAIN_WHILE2
+
+_MAIN_WHILE2_END:	LDR	R0	ONE
+#Activation Record for RESET
+MOV	R5	SP
+ADI	R5	$-28	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$204	#ADD 16 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+		#Variables
+ADI SP	$-4
+LDR	R0	ONE
+STR R0	(SP)
+LDR	R0	ZERO
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+ADI SP	$-4
+STR R0	(SP)
+JMP _RESET
+
+MOV	R5	SP
+ADI	R5	$-8	
+CMP	R5	SL	
+BGT	R5	OVERFLOW
+
+MOV	R0	SP
+ADI	SP	$-4
+MOV	R6	FP   #Previous Frame Pointer
+MOV	FP	R0	
+MOV	R7	PC
+ADI	R7	$60	#ADD 5 EXTRA INSTRUCTIONS TO SKIP
+STR R7	(SP)
+ADI SP	$-4
+STR R6	(SP)
+JMP	_GETDATA
+
+JMP _MAIN_WHILE1
+
+#END PROGRAM
+
+_MAIN_WHILE1_END: TRP	$0
+
+#ERROR HANDLING
+
+OVERFLOW: 	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	STACK_OVERFLOW_MESSAGE
+	ADI SP	$-4
+	STR R0	(SP)
+	JMP	_PF
+	TRP $0
+
+#---------------------------Subroutines----------------------------#
+	
+#printf_--------------------------------
+
+_PF:	LDR	R1	(SP)	
+
+_PF_WHILE:		LDB R2	NULL
+		LDB	R0	(R1)
+		CMP	R2	R0
+		BRZ	R2	_PF_RET  #return if null
+		TRP	$3
+		ADI	R1	$1
+		JMP _PF_WHILE
+			
+_PF_RET:		MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7
+
+#opd-----------------------------------
+
+_OPD:	MOV	R6	SP
+	MOV	R5	R6   # T position
+	ADI	R6	$4
+	LDB	R0	(R6)  # J value
+
+	LDB	R2	_0
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_1
+	LDR R1	_0N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_1:	LDB	R2	_1
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_2
+	LDR R1	_1N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_2:	LDB	R2	_2
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_3
+	LDR R1	_2N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_3:	LDB	R2	_3
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_4
+	LDR R1	_3N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_4:	LDB	R2	_4
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_5
+	LDR R1	_4N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_5:	LDB	R2	_5
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_6
+	LDR R1	_5N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_6:	LDB	R2	_6
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_7
+	LDR R1	_6N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_7:	LDB	R2	_7
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_8
+	LDR R1	_7N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_8:	LDB	R2	_8
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_9
+	LDR R1	_8N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_9:	LDB	R2	_9
+	CMP	R2	R0
+	BNZ	R2	_OPD1_ELSE_10
+	LDR R1	_9N
+	STR R1	(R5)
+	JMP _OPD1_END
+
+_OPD1_ELSE_10:	TRP	$3
+	MOV	R5	SP
+	ADI	R5	$-12	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	#activation record for pf
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	_OPD_MSG_1
+	ADI SP	$-4
+	STR R0	(SP)	
+
+	JMP	_PF
+
+	MOV	R7	R6
+	LDR	R1	ONE
+	STR	R1	FLAG
+
+_OPD1_END:	LDR	R0	FLAG
+	BNZ	R0	_OPD2_END
+	MOV	R6	FP
+	ADI	R6	$-12
+	LDB	R0	(R6)
+	LDB	R1	PLUSSYMBOL
+	CMP	R0	R1
+	LDR	R2	(R5)
+	MOV	R6	FP
+	ADI	R6	$-16
+	LDR	R1	(R6)
+	MUL	R1	R2
+	BRZ R0	_OPD2_END
+	LDR	R0	NEGATIVE
+	MUL R1	R0
+
+_OPD2_END:	LDR	R0	OPDV
+	ADD	R1	R0
+	STR	R1	OPDV
+
+_OPD3_END:		MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7
+
+
+#flush---------------------------------------
+
+_FLUSH:	LDR	R0	ZERO
+		STR	R0	DATA
+		TRP	$4
+		STB	R0	C
+_FLUSH_WHILE1:	LDB	R0	C
+		LDB	R1	NEWLINE
+		SUB	R0	R1
+		BRZ	R0	_FLUSH_WHILE1_END
+		TRP	$4
+		STB	R0	C
+		JMP	_FLUSH_WHILE1
+_FLUSH_WHILE1_END:			MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+	JMR	R7
+
+#getdata---------------------------------------
+
+_GETDATA:	LDR	R0	SIZE
+	LDR	R1	CNT
+	CMP	R1	R0
+	BLT	R1	_GETDATA_ELSE
+	BRZ	R1	_GETDATA_ELSE
+	TRP	$4
+	LDR	R1	CNT
+	LDA	R2	C
+	ADD	R2	R1
+	STB R0	(R2)
+	ADI	R1	$1
+	STR	R1	CNT
+	JMP	_GETDATA_END
+
+_GETDATA_ELSE:	MOV	R5	SP
+	ADI	R5	$-12	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+
+	MOV	R0	SP
+		#activation record for pf
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$96	#ADD 8 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	LDA R0	_GETDATA_STRING
+	ADI SP	$-4
+	STR R0	(SP)
+	JMP	_PF
+
+	#activtion record for flush
+	MOV	R5	SP
+	ADI	R5	$-8	
+	CMP	R5	SL	
+	BGT	R5	OVERFLOW
+
+	MOV	R0	SP
+	ADI	SP	$-4
+	MOV	R6	FP   #Previous Frame Pointer
+	MOV	FP	R0	
+	MOV	R7	PC
+	ADI	R7	$60	#ADD 5 EXTRA INSTRUCTIONS TO SKIP
+	STR R7	(SP)
+	ADI SP	$-4
+	STR R6	(SP)
+	JMP	_FLUSH
+	MOV	R7	R6
+
+_GETDATA_END:		MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+
+JMR R7
+
+#reset-------------------------------------------
+
+_RESET:	LDR	R0	ZERO
+	STR R0	(SP)		
+
+_RESET_FOR1:	LDR	R0	(SP)
+	LDR R2	SIZE
+	CMP	R2	R0
+	BRZ	R2	_RESET_FOR1_END
+	LDA	R3	C
+	ADD	R3	R0
+	LDB	R4	NULL
+	STR	R4	(R3)
+	ADI	R0	$1
+	STR	R0	(SP)
+	JMP	_RESET_FOR1
+
+_RESET_FOR1_END:	MOV	R6	FP
+	ADI	R6	$-12
+	LDR	R0	(R6)
+	STR R0	DATA
+	ADI	R6	$-4
+	LDR	R0	(R6)
+	STR	R0	OPDV
+	ADI	R6	$-4
+	LDR	R0	(R6)
+	STR	R0	CNT
+	ADI	R6	$-4
+	LDR	R0	(R6)
+	STR	R0	FLAG
+
+	MOV	R6	FP	#deactivate record
+	ADI	R6	$-4
+	LDR	R7	(R6)
+	ADI	R6	$-4
+	MOV	SP	FP
+	LDR FP	(R6)
+
+	JMR	R7
