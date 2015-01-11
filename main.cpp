@@ -1,9 +1,12 @@
-#include "VM.h"
+//#include "VM.h"
 #include "Assembler.h"
+#include "OS.h"
 
 int main(int argc, const char * argv[]) {
+
+	OS::runShell();
     
-	bool logging = false;
+	/*bool logging = false;
 	string fName = "";
 
 	if (argc == 3)
@@ -43,7 +46,7 @@ int main(int argc, const char * argv[]) {
     //execute virtual machine using bytecode
     VirtualMachine vm(assembly, assembler.heapStart, BYTECODE_SIZE);
     vm.exeLog = logging;
-    vm.Run(0);
+    vm.Run(0);*/
     
     return 0;
 }
